@@ -1,0 +1,30 @@
+{
+  "name": "github-sonic-screwdriver",
+  "version": "0.1.0",
+  "description": "CLI tool for GitHub",
+  "main": "index.js",
+  "bin": {
+    "git-sonic-screwdriver": "./bin/git-sonic-screwdriver"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sthima/github-sonic-screwdriver.git"
+  },
+  "author": "Matheus Marchini <matheus@sthima.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sthima/github-sonic-screwdriver/issues"
+  },
+  "homepage": "https://github.com/sthima/github-sonic-screwdriver#readme",
+  "dependencies": {
+    "ghauth": "^3.2.1",
+    "graphql": "^0.13.1",
+    "graphql-request": "^1.5.1",
+    "moment": "^2.21.0",
+    "ora": "^2.0.0",
+    "yargs": "^11.0.0"
+  }
+}
