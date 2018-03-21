@@ -3,6 +3,7 @@
 const yargs = require('yargs');
 const { UserActivity } = require('../lib/user-activity.js');
 const auth = require('../lib/auth.js');
+const ora = require('ora');
 
 const options = {
   'last-week': {
@@ -24,9 +25,23 @@ function builder(yargs) {
     .wrap(90);
 }
 
-function handler(argv) {
+async function handler(argv) {
   const user_activity = new UserActivity(argv.username, argv.lastWeek);
-  return user_activity.run();
+  const spinner = new ora("Fetching data from GitHub");
+  spinner.start();
+  try {
+    const result = await user_activity.run();
+    if (result.status == true ) {
+      spinner.succeed("Done!");
+      console.log(result.text);
+      return true;
+    }
+    spinner.fail(result.text);
+    return false;
+  } catch (err) {
+    spinner.fail(err);
+    return false;
+  }
 }
 
 module.exports = {
