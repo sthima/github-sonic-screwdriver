@@ -1,0 +1,26 @@
+query getIssueComments($login: String!) {
+  user(login:$login) {
+		issueComments(last: 100) {
+      edges {
+        node {
+          issue {
+            number
+            title
+            repository {
+              name
+              owner {
+                login
+              }
+            }
+            url
+          }
+          pullRequest {
+            url
+          }
+          publishedAt
+          url
+        }
+      }
+    }
+  }
+}
