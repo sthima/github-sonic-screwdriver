@@ -49,7 +49,7 @@ export class UserActivity {
     return this.auth.token;
   }
 
-  async fetchData(): any {
+  async fetchData(): Promise<any> {
     const token = await this.getToken();
     const headers = {
       "Authorization": `Bearer ${token}`
@@ -108,7 +108,7 @@ export class UserActivity {
     for(const entry of issues.entries()) {
       const issue = entry[1];
       text += chalk.yellow.bold(`${issue.title} (#${issue.id})`) + os.EOL;
-      text += " ".repeat(2) + chalk.cyan.underline(issue.url) + os.EOL;
+      text += " ".repeat(2) + chalk.cyan.underline(`${issue.url}`) + os.EOL;
       text += " ".repeat(2) + chalk.bold("Comments: ") + issue.comments.length;
       text += os.EOL.repeat(2);
     }
