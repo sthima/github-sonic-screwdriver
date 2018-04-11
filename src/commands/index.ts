@@ -14,6 +14,7 @@ export function completionFactory() {
   return completion;
 }
 
+// TODO: add authentication
 function authenticationMiddleware(argv: any) {
   const spinner = new ora("Fetch data from GitHub...");
   spinner.start();
