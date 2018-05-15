@@ -12,9 +12,11 @@ const query = fs.readFileSync(filePath, 'utf8');
 export class PullRequestReport {
   private auth?: ghauthData;
   private _auth: Promise<ghauthData>;
+  private ignoredRepositories: Array<String>;
 
-  constructor() {
+  constructor(ignoredRepositories: Array<String>) {
     this._auth = auth();
+    this.ignoredRepositories = ignoredRepositories;
   }
   async getToken(): Promise<String> {
     this.auth = await this._auth;
@@ -31,7 +33,7 @@ export class PullRequestReport {
     const variables = {
       "login": "sthima"
     }
-    
+
     // try {
       let data = await client.request(query, variables);
       return data;
@@ -48,6 +50,9 @@ export class PullRequestReport {
     const repos: Map<String, Array<any>> = new Map();
 
     for(const repository of data.organization.repositories.nodes) {
+      if (this.ignoredRepositories.includes(repository.name)) {
+        continue;
+      }
       const prs: Array<any> = [];
       for (const pull_request of repository.pullRequests.nodes) {
         if (pull_request.state == 'OPEN') {
@@ -90,7 +95,7 @@ export class PullRequestReport {
           deltaRepo += pr_time;
           let lala = this.formatForMe(pr_time);
           console.log(`  #${pr.number}: ${chalk.bold(lala)}`);
-        }        
+        }
         let avgForRepo = deltaRepo / entry[1].length;
         let lala = this.formatForMe(avgForRepo);
         console.log(`Average: ${chalk.green.bold(lala)}`);
