@@ -4,8 +4,9 @@ import path from "path";
 import auth, { ghauthData } from "./auth";
 import { GraphQLClient } from "graphql-request";
 import chalk from "chalk";
+import { calculateWorkingHours } from "./utils";
 
-var moment = require('moment-business-days');
+const moment = require('moment-business-days');
 
 const ENDPOINT = "https://api.github.com/graphql";
 const filePath = path.resolve(__dirname, "..", "..", 'queries', "pull-request-report.gql");
@@ -14,11 +15,11 @@ const query = fs.readFileSync(filePath, 'utf8');
 export class PullRequestReport {
   private auth?: ghauthData;
   private _auth: Promise<ghauthData>;
-  private ignoredRepositories: Array<String>;
+  // private ignoredRepositories: Array<String>;
 
   constructor(ignoredRepositories: Array<String>) {
     this._auth = auth();
-    this.ignoredRepositories = ignoredRepositories;
+    // this.ignoredRepositories = ignoredRepositories;
   }
   async getToken(): Promise<String> {
     this.auth = await this._auth;
@@ -52,9 +53,9 @@ export class PullRequestReport {
     const repos: Map<String, Array<any>> = new Map();
 
     for(const repository of data.organization.repositories.nodes) {
-      if (this.ignoredRepositories.includes(repository.name)) {
-        continue;
-      }
+      // if (this.ignoredRepositories.includes(repository.name)) {
+      //   continue;
+      // }
       const prs: Array<any> = [];
       for (const pull_request of repository.pullRequests.nodes) {
         if (pull_request.state == 'OPEN') {
@@ -77,34 +78,6 @@ export class PullRequestReport {
     return lala;
   }
 
-  calculateWorkingHours(start_date: any, end_date: any) {
-    let hours = 0;
-    let amount_of_weekdays = moment(start_date).businessDiff(moment(end_date));
-    let start_day = start_date.day();
-    let end_day = end_date.day();
-
-    if (amount_of_weekdays == 0) {
-      // all work was done in the weekends, maybe just calculate normally?
-      hours = end_date.diff(start_date);
-    }
-    else if (amount_of_weekdays == 1)  {
-      // created and close in the same day (on a weekday)
-      hours = end_date.diff(start_date);
-    }
-    else {
-      if ((start_day != 6) && (start_day != 0)) { 
-        // if it's weekday, sum the hours until the end of the day
-        hours += moment(start_date).endOf("day").diff(start_date);
-      }
-      if ((end_day != 6) && (end_day != 0)) {
-        // if it's weekday, sum the hours from start until end of day
-        hours += end_date.diff(moment(end_date).startOf("day"));
-      }
-    }        
-    hours += moment.duration(amount_of_weekdays - 1, 'days');
-    return hours
-  }
-
   async run() {
     // let status = true;
     // let output: String;
@@ -120,10 +93,8 @@ export class PullRequestReport {
         console.log(chalk.yellow.underline(`sthima/${entry[0]}`));
         for (const pr of entry[1]) {
           let start_date: any = moment(pr.createdAt);
-          let end_date: any = pr.closedAt? moment(pr.closedAt) : moment();
-          console.log(start_date, end_date)
-          // let pr_time: any = end_date.diff(start_date)
-          let pr_time = this.calculateWorkingHours(start_date, end_date);
+          let end_date: any = pr.closedAt? moment(pr.closedAt) : moment()
+          let pr_time = calculateWorkingHours(start_date, end_date);
           deltaRepo += pr_time;
           let lala = this.formatForMe(pr_time);
           console.log(`  #${pr.number}: ${chalk.bold(lala)}`);
