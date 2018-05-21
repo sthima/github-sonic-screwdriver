@@ -27,6 +27,7 @@
     "ghauth": "^3.2.1",
     "graphql-request": "^1.5.1",
     "moment": "^2.21.0",
+    "moment-business-days": "^1.0.6",
     "omelette": "^0.4.5",
     "ora": "^2.0.0",
     "yargs": "^11.0.0"
