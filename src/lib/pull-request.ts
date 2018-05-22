@@ -15,11 +15,11 @@ const query = fs.readFileSync(filePath, 'utf8');
 export class PullRequestReport {
   private auth?: ghauthData;
   private _auth: Promise<ghauthData>;
-  // private ignoredRepositories: Array<String>;
+  private ignoredRepositories: Array<String>;
 
   constructor(ignoredRepositories: Array<String>) {
     this._auth = auth();
-    // this.ignoredRepositories = ignoredRepositories;
+    this.ignoredRepositories = ignoredRepositories;
   }
   async getToken(): Promise<String> {
     this.auth = await this._auth;
@@ -53,9 +53,9 @@ export class PullRequestReport {
     const repos: Map<String, Array<any>> = new Map();
 
     for(const repository of data.organization.repositories.nodes) {
-      // if (this.ignoredRepositories.includes(repository.name)) {
-      //   continue;
-      // }
+      if (this.ignoredRepositories.includes(repository.name)) {
+        continue;
+      }
       const prs: Array<any> = [];
       for (const pull_request of repository.pullRequests.nodes) {
         if (pull_request.state == 'OPEN') {
