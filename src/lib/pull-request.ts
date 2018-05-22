@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-// import moment from 'moment';
 import auth, { ghauthData } from "./auth";
 import { GraphQLClient } from "graphql-request";
 import chalk from "chalk";
@@ -93,7 +92,7 @@ export class PullRequestReport {
         console.log(chalk.yellow.underline(`sthima/${entry[0]}`));
         for (const pr of entry[1]) {
           let start_date: any = moment(pr.createdAt);
-          let end_date: any = pr.closedAt? moment(pr.closedAt) : moment()
+          let end_date: any = pr.closedAt? moment(pr.closedAt) : moment();
           let pr_time = calculateWorkingHours(start_date, end_date);
           deltaRepo += pr_time;
           let lala = this.formatForMe(pr_time);
